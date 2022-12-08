@@ -18,24 +18,18 @@ def hello():
 @app.route('/register',methods = ['GET','POST'])
 def register():
     form = RegisterForm()
-    if request.method == 'POST':
-        # print(request.form)
-        userid = request.form.get('userid')
-        username = request.form.get('username')
-        password = request.form.get('password')
-        re_password = request.form.get('re-password')
+    if form.validate_on_submit():
+   
+        # DB 저장 
+        fcuser = Fcuser()
+        fcuser.userid = form.data.get('userid')
+        fcuser.username = form.data.get('username')
+        fcuser.password = form.data.get('password')
 
-        if (userid and username and password and re_password) and password == re_password :
-            # DB 저장 
-            fcuser = Fcuser()
-            fcuser.userid = userid
-            fcuser.username = username
-            fcuser.password = password
-
-            db.session.add(fcuser)
-            db.session.commit()
-
-            return redirect('/')
+        db.session.add(fcuser)
+        db.session.commit()
+        print('Success')
+        return redirect('/')
 
     return render_template('register.html' , form = form)
 
