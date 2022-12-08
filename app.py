@@ -1,18 +1,25 @@
 import os
-from flask import Flask,request,redirect
+from flask import Flask,request,redirect,session
 from flask import render_template
 from models import db
 from flask_wtf.csrf import CSRFProtect
-from forms import RegisterForm
+from forms import RegisterForm,LoginForm
 
 from models import Fcuser
 
 app = Flask(__name__)
 
 
+@app.route('/logout',methods = ['GET'])
+def logout():
+    session.pop('userid',None)
+    return redirect('/')
+
+
 @app.route('/')
 def hello():
-    return render_template('hello.html')
+    userid = session.get('userid',None)
+    return render_template('hello.html',userid=userid)
 
 
 @app.route('/register',methods = ['GET','POST'])
@@ -29,9 +36,19 @@ def register():
         db.session.add(fcuser)
         db.session.commit()
         print('Success')
-        return redirect('/')
+        return redirect('/login')
 
     return render_template('register.html' , form = form)
+
+@app.route('/login',methods = ['GET','POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        session['userid'] = form.data.get('userid')
+      
+        return redirect('/')
+
+    return render_template('login.html',form = form)
 
 
 

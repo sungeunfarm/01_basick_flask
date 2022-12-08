@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fc-flask_tutorial</title>
-</head>
-<body>
-    <h1>Hello flask</h1>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Title - Home{% endblock %}
+{% block content %}
+
+<h1> Hello Flask {% if userid %}{{userid}} <a href="/logout">로그아웃</a> {% endif %}</h1>
+
+{% endblock %}
