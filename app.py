@@ -2,6 +2,8 @@ import os
 from flask import Flask,request,redirect
 from flask import render_template
 from models import db
+from flask_wtf.csrf import CSRFProtect
+from forms import RegisterForm
 
 from models import Fcuser
 
@@ -15,6 +17,7 @@ def hello():
 
 @app.route('/register',methods = ['GET','POST'])
 def register():
+    form = RegisterForm()
     if request.method == 'POST':
         # print(request.form)
         userid = request.form.get('userid')
@@ -34,7 +37,7 @@ def register():
 
             return redirect('/')
 
-    return render_template('register.html')
+    return render_template('register.html' , form = form)
 
 
 
@@ -47,6 +50,11 @@ if __name__ == '__main__':
     # 사용자 요청이 끝날때마다 커밋을한다 (커밋 데이터베이스에 반영한다.)
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SECRET_KEY'] = 'weflsdflsdoclsdflwefcvlcs'
+
+
+    csrf = CSRFProtect()
+    csrf.init_app(app)
 
     db.init_app(app)
     db.app = app
